@@ -12,18 +12,28 @@ stripe.api_key = "sk_test_51LPJRsSAn1Qvta0uOxy4oY8CDknwNVVBldIz1Aip0YofsfCcOzaOF
 class checkout_session(generics.RetrieveAPIView):
     serializer_class = productSerializer
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, quantity, id):
+        product = data = ProductDetails.objects.get(id=id)
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': 'price_1LPkTlSAn1Qvta0u9SgsmkoW',
-                    'quantity': 3,
-                },
+                    'price_data': {
+                        'currency': 'inr',
+                        'unit_amount': int(product.price * 100),
+                        'product_data': {
+                            'name': product.name,
+                            'images': [product.image_1]
+                        }
+                    },
+                    'quantity': quantity,
+                }
             ],
             mode='payment',
-            success_url='http://127.0.0.1:8000',
-            cancel_url='http://127.0.0.1:8000'
+            metadata={
+                'product_id': product.id
+            },
+            success_url='http://localhost:3001' + '?success=true',
+            cancel_url='http://localhost:3001'
         )
         return redirect(checkout_session.url, code=303)
 
