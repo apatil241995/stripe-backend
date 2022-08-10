@@ -1,8 +1,8 @@
 from django.urls import path, include
-from .views import checkout_session, Get_ProductDetails, PostPaymentData
+from .views import Checkoutsession, Get_ProductDetails, PostPaymentData
 
 urlpatterns = [
-    path('checkout/<id>/<quantity>', checkout_session.as_view()),
+    path('checkout/<id>/<quantity>', Checkoutsession.as_view()),
     path('ProductDetails', Get_ProductDetails.as_view()),
     path('paymentdetails', PostPaymentData.as_view())
 ]

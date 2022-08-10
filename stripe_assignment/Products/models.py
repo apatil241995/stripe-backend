@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 
 
 class ProductDetails(models.Model):
@@ -7,10 +8,8 @@ class ProductDetails(models.Model):
     price = models.IntegerField()
     category = models.CharField(max_length=200)
     description = models.TextField()
-    image_1 = models.URLField()
-    image_2 = models.URLField()
-    image_3 = models.URLField()
-    image_4 = models.URLField()
+    images = ArrayField(ArrayField(models.URLField()))
+
 
     def __str__(self):
         return self.name

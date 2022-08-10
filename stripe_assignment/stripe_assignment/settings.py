@@ -9,17 +9,19 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+dotenv.load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dxla^o6x3vd!f%8(ceyes@wvhn0lkbys8mj99n0dk1m!2(4q5@'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -140,3 +142,8 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY ')
+STRIPE_ENDPOINT_SECRET_KEY = os.environ.get('STRIPE_ENDPOINT_SECRET_KEY')

@@ -3,19 +3,22 @@ from django.shortcuts import redirect
 from rest_framework import generics
 import stripe
 from rest_framework.response import Response
+import os
+from django.conf import settings
 
 from .serializer import productSerializer, paymentSerializer
 from .models import ProductDetails
 
-stripe.api_key = "sk_test_51LPJRsSAn1Qvta0uOxy4oY8CDknwNVVBldIz1Aip0YofsfCcOzaOFNEI6a7dgcFsBW0teraQPmpRbUkBH34FBx1E00wiyjKJ6c"
-endpoint_secret = 'whsec_c91dce48d5dc9f273ce2480eb634cb5888b77509a5c82928f04753d95ef4a62b'
+stripe.api_key = os.environ.get('STRIPE_API_KEY')
+endpoint_secret = os.environ.get('STRIPE_ENDPOINT_SECRET_KEY')
 
 
-class checkout_session(generics.RetrieveAPIView):
+class Checkoutsession(generics.RetrieveAPIView):
     serializer_class = productSerializer
 
     def get(self, request, quantity, id):
-        product = data = ProductDetails.objects.get(id=id)
+
+        product = ProductDetails.objects.get(id=id)
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
@@ -55,7 +58,6 @@ class PostPaymentData(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         payload = request.body
         header = request.META['HTTP_STRIPE_SIGNATURE']
-        event = None
 
         try:
             event = stripe.Webhook.construct_event(
